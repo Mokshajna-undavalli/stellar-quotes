@@ -4,16 +4,39 @@ const authorText = document.getElementById("author")
 let allQuotes = []
 
 async function getQuote() {
-  try {
-    const res = await fetch("https://api.quotable.io/random")
-    const data = await res.json()
+  quoteText.innerText = "Loading quote...";
+  authorText.innerText = "";
 
-    quoteText.innerText = data.content
-    authorText.innerText = "- " + data.author
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch("https://api.quotable.io/random", {
+      signal: controller.signal
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error("API failed");
+
+    const data = await res.json();
+
+    quoteText.innerText = data.content;
+    authorText.innerText = "- " + data.author;
 
   } catch (err) {
-    quoteText.innerText = "Failed to load quote 😢"
-    authorText.innerText = ""
+    // 🔥 fallback quotes (VERY IMPORTANT)
+    const fallback = [
+      { text: "Believe in yourself.", author: "Unknown" },
+      { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
+      { text: "Dream big and dare to fail.", author: "Norman Vaughan" },
+      { text: "Success is not final, failure is not fatal.", author: "Winston Churchill" }
+    ];
+
+    const q = fallback[Math.floor(Math.random() * fallback.length)];
+
+    quoteText.innerText = q.text;
+    authorText.innerText = "- " + q.author;
   }
 }
 
@@ -119,3 +142,7 @@ if("serviceWorker" in navigator){
 }
 
 console.log("Fetching quote...")
+
+document.querySelectorAll(".side-panel").forEach(p => {
+  p.classList.remove("active");
+});
