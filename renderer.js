@@ -157,7 +157,31 @@ document.addEventListener("mousemove", e => {
 });
 
 // ================= INIT =================
-getQuote();
+function getQuote() {
+  const fallback = [
+    { text: "Believe in yourself.", author: "Unknown" },
+    { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
+    { text: "Dream big and dare to fail.", author: "Norman Vaughan" },
+    { text: "Success is not final, failure is not fatal.", author: "Winston Churchill" },
+    { text: "Do what you can with what you have.", author: "Theodore Roosevelt" }
+  ];
+
+  // show fallback instantly
+  const q = fallback[Math.floor(Math.random() * fallback.length)];
+  quoteText.innerText = q.text;
+  authorText.innerText = "- " + q.author;
+
+  // try API in background
+  fetch("https://api.quotable.io/random")
+    .then(res => res.json())
+    .then(data => {
+      quoteText.innerText = data.content;
+      authorText.innerText = "- " + data.author;
+    })
+    .catch(() => {
+      console.log("API failed, using fallback");
+    });
+}
 
 // CLOSE PANELS ON LOAD (IMPORTANT FIX)
 document.querySelectorAll(".side-panel").forEach(p => {
