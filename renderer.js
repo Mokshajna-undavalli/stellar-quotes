@@ -14,7 +14,6 @@ const offlineQuotes = [
   { text: "Turn your wounds into wisdom.", author: "Oprah Winfrey" },
   { text: "Everything you can imagine is real.", author: "Pablo Picasso" },
   { text: "Whatever you are, be a good one.", author: "Abraham Lincoln" },
-
   { text: "Happiness depends upon ourselves.", author: "Aristotle" },
   { text: "If opportunity doesn’t knock, build a door.", author: "Milton Berle" },
   { text: "Don’t wait. The time will never be just right.", author: "Napoleon Hill" },
@@ -25,7 +24,6 @@ const offlineQuotes = [
   { text: "Life is what happens when you’re busy making plans.", author: "John Lennon" },
   { text: "Get busy living or get busy dying.", author: "Stephen King" },
   { text: "You only live once, but if you do it right, once is enough.", author: "Mae West" },
-
   { text: "Keep going. Be all in.", author: "Bryan Hutchinson" },
   { text: "Dream as if you’ll live forever.", author: "James Dean" },
   { text: "Turn your dreams into plans.", author: "Unknown" },
@@ -36,7 +34,6 @@ const offlineQuotes = [
   { text: "Don’t stop until you’re proud.", author: "Unknown" },
   { text: "Make it happen.", author: "Unknown" },
   { text: "Stay positive, work hard, make it happen.", author: "Unknown" },
-
   { text: "Your only limit is your mind.", author: "Unknown" },
   { text: "Work hard in silence.", author: "Unknown" },
   { text: "Don’t watch the clock.", author: "Sam Levenson" },
@@ -46,61 +43,46 @@ const offlineQuotes = [
   { text: "Do what you can.", author: "Arthur Ashe" },
   { text: "Use what you have.", author: "Arthur Ashe" },
   { text: "The harder you work, the luckier you get.", author: "Gary Player" },
-  { text: "Success is walking from failure to failure.", author: "Winston Churchill" },
-
-  { text: "Don’t limit your challenges.", author: "Unknown" },
-  { text: "Challenge your limits.", author: "Unknown" },
-  { text: "Doubt kills more dreams than failure ever will.", author: "Suzy Kassem" },
-  { text: "If you can dream it, you can do it.", author: "Walt Disney" },
-  { text: "Act or accept.", author: "Unknown" },
-  { text: "Stay foolish to stay sane.", author: "Maxime Lagacé" },
-  { text: "When nothing goes right, go left.", author: "Unknown" },
-  { text: "Be so good they can’t ignore you.", author: "Steve Martin" },
-  { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
-  { text: "Everything you can imagine is real.", author: "Picasso" },
-
-  { text: "Whatever you do, do it well.", author: "Walt Disney" },
-  { text: "What we achieve inwardly will change outer reality.", author: "Plutarch" },
-  { text: "Strive for greatness.", author: "Unknown" },
-  { text: "Be yourself; everyone else is taken.", author: "Oscar Wilde" },
-  { text: "Turn pain into power.", author: "Unknown" },
-  { text: "Dream it. Wish it. Do it.", author: "Unknown" },
-  { text: "Stay strong.", author: "Unknown" },
-  { text: "Work hard. Stay humble.", author: "Unknown" },
-  { text: "Stay focused and never give up.", author: "Unknown" },
-  { text: "Consistency is key.", author: "Unknown" },
-
-  { text: "Action is the foundational key to success.", author: "Picasso" },
-  { text: "Success is not for the lazy.", author: "Unknown" },
-  { text: "Don’t quit your daydream.", author: "Unknown" },
-  { text: "Failure is success in progress.", author: "Albert Einstein" },
-  { text: "Start today.", author: "Unknown" },
-  { text: "Rise and grind.", author: "Unknown" },
-  { text: "Make yourself proud.", author: "Unknown" },
-  { text: "Stay hungry.", author: "Steve Jobs" },
-  { text: "Stay foolish.", author: "Steve Jobs" },
-  { text: "Be fearless.", author: "Unknown" }
+  { text: "Success is walking from failure to failure.", author: "Winston Churchill" }
 ];
 
 // ================= GET QUOTE =================
 async function getQuote() {
-  // show offline instantly
-  const q = offlineQuotes[Math.floor(Math.random() * offlineQuotes.length)];
-  quoteText.innerText = q.text;
-  authorText.innerText = "- " + q.author;
+  // fade out
+  quoteText.style.opacity = 0;
 
-  try {
-    const res = await fetch("https://api.quotable.io/random");
-    if (!res.ok) throw new Error("API error");
+  setTimeout(async () => {
+    // 1️⃣ show offline instantly
+    const q = offlineQuotes[Math.floor(Math.random() * offlineQuotes.length)];
+    quoteText.innerText = q.text;
+    authorText.innerText = "- " + q.author;
 
-    const data = await res.json();
+    quoteText.style.opacity = 1;
 
-    quoteText.innerText = data.content;
-    authorText.innerText = "- " + data.author;
+    // 2️⃣ try API in background
+    try {
+      const res = await fetch("https://api.quotable.io/random");
+      if (!res.ok) throw new Error();
 
-  } catch (err) {
-    console.log("Using offline quote");
-  }
+      const data = await res.json();
+
+      // smooth replace
+      setTimeout(() => {
+        quoteText.style.opacity = 0;
+
+        setTimeout(() => {
+          quoteText.innerText = data.content;
+          authorText.innerText = "- " + data.author;
+          quoteText.style.opacity = 1;
+        }, 200);
+
+      }, 800);
+
+    } catch (err) {
+      console.log("Offline mode");
+    }
+
+  }, 200);
 }
 
 // ================= BUTTONS =================
@@ -182,7 +164,7 @@ document.getElementById("themeToggle").onclick = () => {
   document.body.classList.toggle("light");
 };
 
-// ================= ANIMATION =================
+// ================= SHOOTING STARS =================
 setInterval(() => {
   const star = document.createElement("div");
   star.className = "shooting";
@@ -206,7 +188,7 @@ document.addEventListener("mousemove", e => {
 // ================= INIT =================
 getQuote();
 
-// FORCE CLOSE PANELS ON LOAD
+// CLOSE PANELS ON LOAD
 document.querySelectorAll(".side-panel").forEach(p => {
   p.classList.remove("active");
 });
