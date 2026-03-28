@@ -157,7 +157,8 @@ document.addEventListener("mousemove", e => {
 });
 
 // ================= INIT =================
-function getQuote() {
+async function getQuote() {
+  // fallback quotes (instant display)
   const fallback = [
     { text: "Believe in yourself.", author: "Unknown" },
     { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
@@ -166,21 +167,32 @@ function getQuote() {
     { text: "Do what you can with what you have.", author: "Theodore Roosevelt" }
   ];
 
-  // show fallback instantly
-  const q = fallback[Math.floor(Math.random() * fallback.length)];
-  quoteText.innerText = q.text;
-  authorText.innerText = "- " + q.author;
+  // show fallback immediately
+  const localQuote = fallback[Math.floor(Math.random() * fallback.length)];
+  quoteText.innerText = localQuote.text;
+  authorText.innerText = "- " + localQuote.author;
 
-  // try API in background
-  fetch("https://api.quotable.io/random")
-    .then(res => res.json())
-    .then(data => {
-      quoteText.innerText = data.content;
-      authorText.innerText = "- " + data.author;
-    })
-    .catch(() => {
-      console.log("API failed, using fallback");
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch("https://api.quotable.io/random", {
+      signal: controller.signal
     });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error("API failed");
+
+    const data = await res.json();
+
+    // replace fallback with real quote
+    quoteText.innerText = data.content;
+    authorText.innerText = "- " + data.author;
+
+  } catch (err) {
+    console.log("API failed → using fallback");
+  }
 }
 
 // CLOSE PANELS ON LOAD (IMPORTANT FIX)
