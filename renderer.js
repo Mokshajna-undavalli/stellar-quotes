@@ -3,14 +3,18 @@ const authorText = document.getElementById("author")
 
 let allQuotes = []
 
-async function loadQuotes(){
-  const res = await fetch("https://api.quotable.io/random")
-const data = await res.json()
+async function getQuote() {
+  try {
+    const res = await fetch("https://api.quotable.io/random")
+    const data = await res.json()
 
-quoteText.innerText = data.content
-authorText.innerText = "- " + data.author
-  allQuotes = await res.json()
-  getQuote()
+    quoteText.innerText = data.content
+    authorText.innerText = "- " + data.author
+
+  } catch (err) {
+    quoteText.innerText = "Failed to load quote 😢"
+    authorText.innerText = ""
+  }
 }
 
 function getQuote(){
@@ -113,3 +117,5 @@ loadQuotes()
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("service-worker.js")
 }
+
+console.log("Fetching quote...")
