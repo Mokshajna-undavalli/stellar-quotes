@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Stellar Quotes</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<meta name="theme-color" content="#020d1a">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">⭐ Stellar Quotes</div>
+
+  <div class="nav-buttons">
+    <button id="likedBtn">❤️</button>
+    <button id="favBtn">⭐</button>
+    <button id="shareTopBtn">📤</button>
+    <button id="themeToggle">🌙</button>
+  </div>
+</nav>
+
+<div class="cosmos">
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="nebula"></div>
+  <div class="shooting-container"></div>
+
+  <div class="planet earth"></div>
+  <div class="planet mars"></div>
+</div>
+
+<div class="card">
+  <p id="quote">Loading quote...</p>
+  <p id="author"></p>
+
+  <div class="buttons">
+    <button id="likeQuote">❤️</button>
+    <button id="copyQuote">📋</button>
+    <button id="favQuote">⭐</button>
+  </div>
+
+  <button id="newQuote">New Quote</button>
+</div>
+
+<!-- Panels -->
+<div id="favoritesPanel" class="side-panel">
+  <h2>⭐ Favorites</h2>
+  <ul id="favoritesList"></ul>
+  <p class="empty">No favorites yet 🌌</p>
+  <button class="closePanel">Close</button>
+</div>
+
+<div id="likedPanel" class="side-panel">
+  <h2>❤️ Liked</h2>
+  <ul id="likedList"></ul>
+  <p class="empty">No liked quotes yet 🌌</p>
+  <button class="closePanel">Close</button>
+</div>
+
+<script src="renderer.js"></script>
+<script src="install.js"></script>
+
+</body>
+</html>
