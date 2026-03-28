@@ -4,7 +4,11 @@ const authorText = document.getElementById("author")
 let allQuotes = []
 
 async function loadQuotes(){
-  const res = await fetch("https://type.fit/api/quotes")
+  const res = await fetch("https://api.quotable.io/random")
+const data = await res.json()
+
+quoteText.innerText = data.content
+authorText.innerText = "- " + data.author
   allQuotes = await res.json()
   getQuote()
 }
